@@ -46,14 +46,16 @@
         </a>
 
         <!-- Add Login/Logout Buttons -->
-        <div class="ms-auto">
-            {% if user.is_authenticated %}
-                <span class="text-white me-3">Hi, {{ user.username }}</span>
-                <a href="{% url 'logout' %}" class="btn btn-light btn-sm">Logout</a>
-            {% else %}
-                <a href="{% url 'login' %}" class="btn btn-light btn-sm">Login</a>
-            {% endif %}
-        </div>
+        {% if user.is_authenticated %}
+    <div class="ms-auto">
+        <span class="text-white me-2">Hi, {{ user.username }}</span>
+        <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a>
+    </div>
+{% else %}
+    <div class="ms-auto">
+        <a href="{% url 'login' %}" class="btn btn-light btn-sm">Login</a>
+    </div>
+{% endif %}
     </div>
 </nav>
 
