@@ -1,0 +1,12 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+<div style="display:flex;align-items:center;gap:10px;">
+    <img src="{% static 'images/logo.jpg' %}" alt="Company Logo" style="height: 100px; margin-bottom: 10px;">
+    <h2>GAZA BUSINESS SERVICE ENTRS.</h2>
+    <p>(Building Materials and General Supplies)</p>
+</div>
+
+{{ block.super }}
+{% endblock %}

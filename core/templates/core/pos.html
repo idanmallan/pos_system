@@ -1,0 +1,109 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">New Sale - GAZA BUSINESS SERVICE ENTRS.</h2>
+
+    {% if message %}
+        <div class="alert alert-info">{{ message }}</div>
+    {% endif %}
+
+    <form method="POST" id="pos-form">
+        {% csrf_token %}
+
+        <table class="table table-bordered" id="items-table">
+            <thead class="table-light">
+                <tr>
+                    <th>Item</th>
+                    <th>Price (₦)</th>
+                    <th>Quantity</th>
+                    <th>Total (₦)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <select name="item[]" class="form-select item-select">
+                            {% for itm in items %}
+                                <option value="{{ itm.id }}" data-price="{{ itm.price }}">{{ itm.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td class="price">₦0</td>
+                    <td><input type="number" name="quantity[]" class="form-control qty" min="1" value="1"></td>
+                    <td class="total">₦0</td>
+                    <td><button type="button" class="btn btn-danger btn-sm remove-row">&times;</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button type="button" class="btn btn-secondary mb-3" id="add-row">+ Add Item</button>
+
+        <div class="mb-3">
+            <label for="discount">Discount (₦):</label>
+            <input type="number" name="discount" id="discount" class="form-control" value="0" min="0">
+        </div>
+
+        <div class="mb-3">
+            <h5>Subtotal: ₦<span id="subtotal">0</span></h5>
+            <h5>Discount: ₦<span id="discount-display">0</span></h5>
+            <h4>Total: ₦<span id="final-total">0</span></h4>
+        </div>
+
+        <div class="mb-3">
+            <label for="payment_type">Payment Type:</label>
+            <select name="payment_type" class="form-select">
+                <option value="cash">Cash</option>
+                <option value="bank_transfer">Bank Transfer</option>
+                <option value="pos">P.O.S</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Complete Sale</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function updateTotals() {
+        let subtotal = 0;
+        document.querySelectorAll('#items-table tbody tr').forEach(row => {
+            const select = row.querySelector('.item-select');
+            const price = parseFloat(select.options[select.selectedIndex].dataset.price);
+            const qty = parseInt(row.querySelector('.qty').value) || 0;
+
+            row.querySelector('.price').innerText = `₦${price}`;
+            const total = price * qty;
+            row.querySelector('.total').innerText = `₦${total}`;
+            subtotal += total;
+        });
+
+        const discount = parseFloat(document.getElementById('discount').value) || 0;
+        document.getElementById('subtotal').innerText = subtotal;
+        document.getElementById('discount-display').innerText = discount;
+        document.getElementById('final-total').innerText = subtotal - discount;
+    }
+
+    document.getElementById('items-table').addEventListener('change', updateTotals);
+    document.getElementById('items-table').addEventListener('input', updateTotals);
+    document.getElementById('discount').addEventListener('input', updateTotals);
+
+    document.getElementById('add-row').addEventListener('click', function() {
+        const row = document.querySelector('#items-table tbody tr').cloneNode(true);
+        row.querySelector('.qty').value = 1;
+        document.querySelector('#items-table tbody').appendChild(row);
+        updateTotals();
+    });
+
+    document.getElementById('items-table').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-row') && document.querySelectorAll('#items-table tbody tr').length > 1) {
+            e.target.closest('tr').remove();
+            updateTotals();
+        }
+    });
+
+    updateTotals();
+});
+</script>
+{% endblock %}

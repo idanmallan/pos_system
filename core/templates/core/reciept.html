@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt - GAZA BUSINESS SERVICE ENTRS.</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; }
+        .receipt-container {
+            max-width: 700px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        }
+        .company-header { text-align: center; }
+        .company-header h2 { color: #0d6efd; }
+        hr { border-top: 1px dashed #aaa; }
+        .thank-you { text-align: center; margin-top: 15px; font-weight: bold; color: #0d6efd; }
+        .footer-text { text-align: center; font-size: 13px; margin-top: 20px; color: #555; }
+        .totals-section { text-align: right; }
+    </style>
+</head>
+<body>
+<div class="receipt-container">
+
+    <!-- Company Header -->
+    <div class="company-header mb-3">
+        <h2>GAZA BUSINESS SERVICE ENTRS.</h2>
+        <p>(Building materials and general supplies)</p>
+        <p>#45 Sharada Phase III, After Kwanar Ganduje</p>
+        <p>Phone: 08098984390, 08056949100, 08033659960</p>
+    </div>
+    <hr>
+
+    <!-- Receipt Info -->
+    <h4 class="text-center mb-3">SALES RECEIPT</h4>
+    <p><b>Date:</b> {{ sale.date|date:"Y-m-d H:i" }}</p>
+    <p><b>Receipt No:</b> {{ sale.id }}</p>
+    <p><b>Payment:</b> {{ sale.payment_type|title }}</p>
+    <hr>
+
+    <!-- Items Table -->
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price (₦)</th>
+                <th>Subtotal (₦)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in sale.saleitem_set.all %}
+                <tr>
+                    <td>{{ item.item.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.quantity|mul:item.price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Totals -->
+   <div class="totals-section">
+    <p><b>Subtotal:</b> ₦{{ subtotal }}</p>
+    <p><b>Discount:</b> ₦{{ sale.discount }}</p>
+    <h4><b>Total:</b> ₦{{ total }}</h4>
+</div>
+    <hr>
+
+    <!-- QR Code -->
+    <div class="text-center">
+        <p>Scan QR code for verification:</p>
+        <img src="{{ qr_code_url }}" alt="QR Code">
+    </div>
+
+    <!-- Thank You -->
+    <div class="thank-you">
+        Thank you for your purchase!
+    </div>
+
+    <!-- Buttons -->
+    <div class="mt-4 text-center">
+        <a href="/" class="btn btn-primary">Back to Dashboard</a>
+        <a href="/pos/" class="btn btn-secondary">New Sale</a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-text">
+        &copy; {{ now|date:"Y" }} GAZA BUSINESS SERVICE ENTRS. All Rights Reserved.
+    </div>
+</div>
+</body>
+</html>
