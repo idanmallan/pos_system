@@ -44,8 +44,19 @@
                 <small> Phone: 08098984390, 08056949100, 08033659960</small><br>
             </div>
         </a>
+
+        <!-- Add Login/Logout Buttons -->
+        <div class="ms-auto">
+            {% if user.is_authenticated %}
+                <span class="text-white me-3">Hi, {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="btn btn-light btn-sm">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-light btn-sm">Login</a>
+            {% endif %}
+        </div>
     </div>
 </nav>
+
 
 <!-- PAGE CONTENT -->
 <div class="container mt-4">
